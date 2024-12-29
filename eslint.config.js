@@ -36,6 +36,7 @@ export default [
         'warn',
         { allowConstantExport: true },
       ],
+      'react/prop-types': [2, { ignore: 'className' }],
       indent: ['error', 2, { SwitchCase: 1 }],
       semi: ['warn', 'always'],
       eqeqeq: ['error', 'always', { null: 'ignore' }],
