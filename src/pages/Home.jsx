@@ -1,4 +1,4 @@
-import Avatar from '../features/avatar/components/Avatar';
+import Avatar from '@features-avatar/components/Avatar';
 
 function Home() {
   return (

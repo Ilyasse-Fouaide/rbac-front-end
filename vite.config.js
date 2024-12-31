@@ -11,6 +11,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@features-auth': path.resolve(__dirname, './src/features/auth'),
+      '@features-avatar': path.resolve(__dirname, './src/features/avatar'),
     },
   },
 });
