@@ -1,4 +1,4 @@
-import { useAuth } from '@/features/auth/components/AuthProvider';
+import { useAuth } from '@features-auth/components/AuthProvider';
 
 function Avatar() {
   const { user } = useAuth();

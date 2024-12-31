@@ -8,7 +8,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@features-auth/*": ["./src/features/auth/*"],
+      "@features-avatar/*": ["./src/features/avatar/*"]
     }
   }
 }
