@@ -37,6 +37,10 @@ export default function AuthProvider({ children }) {
     }
   }, []);
 
+  const googleButton = React.useCallback(() => {
+    window.open(`${import.meta.env.VITE_API_URL}/auth/google`, '_self');
+  }, []);
+
   const checkAuth = React.useCallback(async () => {
     try {
       const { data } = await axiosInstance.get('/profile/me');
@@ -54,8 +58,8 @@ export default function AuthProvider({ children }) {
   }, [checkAuth]);
 
   const contextValue = React.useMemo(
-    () => ({ user, setUser, loading, login, logout, checkAuth }),
-    [user, setUser, loading, login, logout, checkAuth],
+    () => ({ user, setUser, loading, login, logout, checkAuth, googleButton }),
+    [user, setUser, loading, login, logout, checkAuth, googleButton],
   );
 
   return (

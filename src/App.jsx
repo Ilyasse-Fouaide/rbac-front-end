@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Home from '@/pages/Home';
 import SignIn from '@/pages/SignIn';
 import AuthProvider from '@/features/auth/components/AuthProvider';
+import GoogleSuccess from '@/features/auth/pages/GoogleSuccess';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
 const router = createBrowserRouter([
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
   {
     path: '/signin',
     element: <SignIn />,
+  },
+  {
+    path: '/auth/success',
+    element: <GoogleSuccess />,
   },
 ]);
 

@@ -42,7 +42,7 @@ const GoogleIcon = () => {
 
 function SignIn() {
   const navigate = useNavigate();
-  const { login, checkAuth } = useAuth();
+  const { login, checkAuth, googleButton } = useAuth();
   const [error, setError] = React.useState(null);
 
   const {
@@ -70,19 +70,15 @@ function SignIn() {
     mutate(data);
   };
 
-  const google = () => {
-    // window.open(
-    //   'https://www.w3schools.com',
-    //   'popup',
-    //   'popup=true,toolbar=yes,scrollbars=yes,resizable=yes,width=600,height=700',
-    // );
-  };
-
   return (
     <div className="flex h-screen items-center">
       <Card className="mx-auto w-[450px] border-none shadow-none">
         <CardHeader>
-          <Button disabled={isPending} className="w-full" onClick={google}>
+          <Button
+            disabled={isPending}
+            className="w-full"
+            onClick={googleButton}
+          >
             <GoogleIcon />
             Sign in with Google
           </Button>
