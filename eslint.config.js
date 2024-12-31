@@ -5,6 +5,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import prettier from 'eslint-plugin-prettier';
+import pluginQuery from '@tanstack/eslint-plugin-query';
 
 export default [
   { ignores: ['dist'] },
@@ -32,11 +33,8 @@ export default [
       ...react.configs['jsx-runtime'].rules,
       ...reactHooks.configs.recommended.rules,
       'react/jsx-no-target-blank': 'off',
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
-      'react/prop-types': [2, { ignore: 'className' }],
+      'react-refresh/only-export-components': 'off',
+      'react/prop-types': 'off',
       indent: ['error', 2, { SwitchCase: 1 }],
       semi: ['warn', 'always'],
       eqeqeq: ['error', 'always', { null: 'ignore' }],
@@ -55,4 +53,5 @@ export default [
     },
   },
   eslintPluginPrettierRecommended,
+  ...pluginQuery.configs['flat/recommended'],
 ];
