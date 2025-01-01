@@ -1,8 +1,7 @@
 import {
   ChevronsUpDown,
-  Sparkles,
   BadgeCheck,
-  CreditCard,
+  Settings2,
   Bell,
   LogOut,
 } from 'lucide-react';
@@ -24,6 +23,7 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAuth } from '@features-auth/components/AuthProvider';
 import AvatarImage from '@features-avatar/components/Avatar';
+import { Link } from 'react-router-dom';
 
 function NavUser({ align }) {
   const { isMobile } = useSidebar();
@@ -76,20 +76,15 @@ function NavUser({ align }) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
                 <BadgeCheck />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
+              <Link to={'/settings'}>
+                <DropdownMenuItem>
+                  <Settings2 />
+                  Settings
+                </DropdownMenuItem>
+              </Link>
               <DropdownMenuItem>
                 <Bell />
                 Notifications

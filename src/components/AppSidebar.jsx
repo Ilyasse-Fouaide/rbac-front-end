@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { Calendar, Home, Inbox, ChartNoAxesColumn } from 'lucide-react';
 
 import {
@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Separator } from '@/components/ui/separator';
 import NavUser from '@/components/NavUser';
+import logoOpened from '@/assets/header/0.75x/header.png';
 
 // Menu items.
 const sidebarLefttData = [
@@ -112,15 +113,21 @@ const SidebarMain = ({
 };
 
 const SidebarLeft = () => {
-  const { isMobile, toggleSidebar } = useSidebar();
+  const { isMobile, toggleSidebar, state } = useSidebar();
 
   return (
     <Sidebar variant="sidebar" collapsible="icon">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <div className="w-full overflow-hidden rounded-md">
-              <div className="h-8 w-8 bg-foreground"></div>
+            <div
+              to={'/'}
+              data-state={state}
+              className="flex w-full items-center overflow-hidden rounded-md p-1"
+            >
+              <Link to={'/'}>
+                <img src={logoOpened} className="max-w-none" />
+              </Link>
             </div>
           </SidebarMenuItem>
         </SidebarMenu>
