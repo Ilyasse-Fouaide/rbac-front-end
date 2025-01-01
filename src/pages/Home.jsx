@@ -1,10 +1,11 @@
-import Avatar from '@features-avatar/components/Avatar';
+import SidebarLayout from '@/layout/SidebarLayout';
+import { Outlet } from 'react-router-dom';
 
 function Home() {
   return (
-    <div>
-      <Avatar />
-    </div>
+    <SidebarLayout>
+      <Outlet />
+    </SidebarLayout>
   );
 }
 
