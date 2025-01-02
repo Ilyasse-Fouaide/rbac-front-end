@@ -1,10 +1,7 @@
-import {
-  ChevronsUpDown,
-  BadgeCheck,
-  Settings2,
-  Bell,
-  LogOut,
-} from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import { ChevronsUpDown, User, Settings, Bell, LogOut } from 'lucide-react';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,11 +20,32 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAuth } from '@features-auth/components/AuthProvider';
 import AvatarImage from '@features-avatar/components/Avatar';
-import { Link } from 'react-router-dom';
 
 function NavUser({ align }) {
+  const navigate = useNavigate();
   const { isMobile } = useSidebar();
-  const { user } = useAuth();
+  const { user, logout, checkAuth } = useAuth();
+
+  const { mutate } = useMutation({
+    mutationFn: logout,
+    onSuccess: async () => {
+      localStorage.removeItem('accessToken');
+      await checkAuth();
+      navigate('/');
+    },
+    onError: (error) => {
+      console.error('logoutError', error);
+    },
+  });
+
+  const handleLogout = () => {
+    mutate();
+  };
+
+  const removePointerEventFromBody = () => {
+    const body = document.body;
+    body.style.pointerEvents = '';
+  };
 
   const firstLetter = user.email.charAt(0).toUpperCase();
 
@@ -75,13 +93,21 @@ function NavUser({ align }) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <Link to={'/settings'}>
+              <Link
+                to={'/settings/profile'}
+                onClick={removePointerEventFromBody}
+              >
                 <DropdownMenuItem>
-                  <Settings2 />
+                  <User />
+                  My Profile
+                </DropdownMenuItem>
+              </Link>
+              <Link
+                to={'/settings/general'}
+                onClick={removePointerEventFromBody}
+              >
+                <DropdownMenuItem>
+                  <Settings />
                   Settings
                 </DropdownMenuItem>
               </Link>
@@ -91,7 +117,7 @@ function NavUser({ align }) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               Log out
             </DropdownMenuItem>
