@@ -10,6 +10,7 @@ import {
 import Home from '@/pages/Home';
 import SignIn from '@/pages/SignIn';
 import AuthProvider from '@features-auth/components/AuthProvider';
+import { ThemeProvider } from '@/context/ThemeProvider';
 import GoogleSuccess from '@features-auth/pages/GoogleSuccess';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import Settings from './features/settings/pages/Settings';
@@ -73,7 +74,9 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <RouterProvider router={router} />
+        <ThemeProvider>
+          <RouterProvider router={router} />
+        </ThemeProvider>
       </AuthProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

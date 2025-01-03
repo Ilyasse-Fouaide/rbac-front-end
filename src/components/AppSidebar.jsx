@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Calendar, Home, Inbox, ChartNoAxesColumn } from 'lucide-react';
+import { Home, Users, ShieldCheck, FileLock2 } from 'lucide-react';
 
 import {
   Sidebar,
@@ -37,28 +37,23 @@ const sidebarLefttData = [
       url: '/',
       icon: Home,
     },
-    {
-      title: 'Inbox',
-      url: '/inbox',
-      icon: Inbox,
-    },
-    {
-      title: 'My work',
-      url: '/my-work',
-      icon: Calendar,
-    },
-    {
-      title: 'Dashboard',
-      url: '/dashboard',
-      icon: ChartNoAxesColumn,
-    },
   ],
   // Group 2
   [
     {
-      title: 'My projects',
-      url: '/projects',
-      icon: Home,
+      title: 'Users',
+      url: '/users',
+      icon: Users,
+    },
+    {
+      title: 'Roles',
+      url: '/roles',
+      icon: ShieldCheck,
+    },
+    {
+      title: 'Permissions',
+      url: '/permissions',
+      icon: FileLock2,
     },
   ],
 ];
@@ -133,16 +128,20 @@ const SidebarLeft = () => {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        {[...Array(sidebarLefttData.length).keys()].map((_value, index) => (
-          <SidebarMain
-            key={index}
-            sidebarLefttData={sidebarLefttData}
-            index={index}
-            label={'Application'}
-            isMobile={isMobile}
-            toggleSidebar={toggleSidebar}
-          />
-        ))}
+        <SidebarMain
+          sidebarLefttData={sidebarLefttData}
+          index={0}
+          label={'Application'}
+          isMobile={isMobile}
+          toggleSidebar={toggleSidebar}
+        />
+        <SidebarMain
+          sidebarLefttData={sidebarLefttData}
+          index={1}
+          label={'Admin'}
+          isMobile={isMobile}
+          toggleSidebar={toggleSidebar}
+        />
       </SidebarContent>
       {isMobile && (
         <SidebarFooter>
