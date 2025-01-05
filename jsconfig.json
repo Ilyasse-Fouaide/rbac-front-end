@@ -10,7 +10,8 @@
     "paths": {
       "@/*": ["./src/*"],
       "@features-auth/*": ["./src/features/auth/*"],
-      "@features-avatar/*": ["./src/features/avatar/*"]
+      "@features-avatar/*": ["./src/features/avatar/*"],
+      "@admin/*": ["./src/features/admin/*"]
     }
   }
 }

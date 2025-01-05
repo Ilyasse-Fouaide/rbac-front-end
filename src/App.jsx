@@ -9,6 +9,7 @@ import {
 
 import Home from '@/pages/Home';
 import SignIn from '@/pages/SignIn';
+import Admin from '@/pages/Admin';
 import AuthProvider from '@features-auth/components/AuthProvider';
 import { ThemeProvider } from '@/context/ThemeProvider';
 import GoogleSuccess from '@features-auth/pages/GoogleSuccess';
@@ -18,6 +19,7 @@ import General from './features/settings/pages/General';
 import Appearance from './features/settings/pages/Appearance';
 import Profile from './features/settings/pages/Profile';
 import Password from './features/settings/pages/Password';
+import Users from '@admin/pages/Users';
 
 const router = createBrowserRouter([
   {
@@ -27,6 +29,18 @@ const router = createBrowserRouter([
         <Home />
       </ProtectedRoute>
     ),
+    children: [
+      {
+        path: 'admin',
+        element: <Admin />,
+        children: [
+          {
+            path: 'users',
+            element: <Users />,
+          },
+        ],
+      },
+    ],
   },
   {
     path: '/signin',

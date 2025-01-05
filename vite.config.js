@@ -13,6 +13,7 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
       '@features-auth': path.resolve(__dirname, './src/features/auth'),
       '@features-avatar': path.resolve(__dirname, './src/features/avatar'),
+      '@admin': path.resolve(__dirname, './src/features/admin'),
     },
   },
 });

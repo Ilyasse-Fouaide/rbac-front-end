@@ -17,6 +17,7 @@ import {
   SidebarSeparator,
   SidebarHeader,
   SidebarFooter,
+  SidebarMenuSkeleton,
 } from './ui/sidebar';
 import {
   Breadcrumb,
@@ -26,6 +27,9 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Separator } from '@/components/ui/separator';
 import NavUser from '@/components/NavUser';
+import { useAuth } from '@features-auth/components/AuthProvider';
+import RequirePermissionProvider from '@/context/RequirePermissionProvider';
+import RequirePermission from '@/components/RequirePermission';
 import logoOpened from '@/assets/header/0.75x/header.png';
 
 // Menu items.
@@ -42,17 +46,17 @@ const sidebarLefttData = [
   [
     {
       title: 'Users',
-      url: '/users',
+      url: '/admin/users',
       icon: Users,
     },
     {
       title: 'Roles',
-      url: '/roles',
+      url: '/admin/roles',
       icon: ShieldCheck,
     },
     {
       title: 'Permissions',
-      url: '/permissions',
+      url: '/admin/permissions',
       icon: FileLock2,
     },
   ],
@@ -108,6 +112,7 @@ const SidebarMain = ({
 };
 
 const SidebarLeft = () => {
+  const { user } = useAuth();
   const { isMobile, toggleSidebar, state } = useSidebar();
 
   return (
@@ -135,13 +140,20 @@ const SidebarLeft = () => {
           isMobile={isMobile}
           toggleSidebar={toggleSidebar}
         />
-        <SidebarMain
-          sidebarLefttData={sidebarLefttData}
-          index={1}
-          label={'Admin'}
-          isMobile={isMobile}
-          toggleSidebar={toggleSidebar}
-        />
+        <RequirePermissionProvider userId={user.userId}>
+          <RequirePermission
+            permission="administrator"
+            loading={<SidebarMenuSkeleton />}
+          >
+            <SidebarMain
+              sidebarLefttData={sidebarLefttData}
+              index={1}
+              label={'Admin'}
+              isMobile={isMobile}
+              toggleSidebar={toggleSidebar}
+            />
+          </RequirePermission>
+        </RequirePermissionProvider>
       </SidebarContent>
       {isMobile && (
         <SidebarFooter>
