@@ -2,6 +2,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import Default from '../layout/Default';
 import { Info } from 'lucide-react';
 import Theme from '../components/Theme';
+import ColorThemes from '../components/ColorThemes';
 
 const page = 'Appearance';
 const pageTitle = 'Appearance';
@@ -14,13 +15,14 @@ function Appearance() {
       pageTitle={pageTitle}
       pageDescription={pageDescription}
     >
-      <Alert className="flex items-center border-blue-500 bg-blue-500/15">
-        <AlertDescription className="inline-flex items-center gap-3 font-medium text-blue-500">
+      <Alert className="flex items-center border-none bg-blue-400/15">
+        <AlertDescription className="inline-flex items-center gap-3 text-blue-500">
           <Info />
           Your preference will be automatically saved for future visits
         </AlertDescription>
       </Alert>
       <Theme />
+      <ColorThemes />
     </Default>
   );
 }

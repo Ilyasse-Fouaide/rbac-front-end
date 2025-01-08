@@ -155,11 +155,9 @@ const SidebarLeft = () => {
           </RequirePermission>
         </RequirePermissionProvider>
       </SidebarContent>
-      {isMobile && (
-        <SidebarFooter>
-          <NavUser align={'end'} />
-        </SidebarFooter>
-      )}
+      <SidebarFooter className="flex lg:hidden">
+        <NavUser align={'end'} />
+      </SidebarFooter>
     </Sidebar>
   );
 };

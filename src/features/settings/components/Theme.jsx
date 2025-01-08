@@ -32,7 +32,7 @@ function Theme() {
               className={cn(
                 'overflow-hidden',
                 selectedTheme === 'light' &&
-                  'outline outline-1 outline-blue-500',
+                  'outline outline-1 outline-primary',
               )}
             >
               <div>
@@ -46,12 +46,12 @@ function Theme() {
                 className={cn(
                   'gap-2 bg-muted/70 px-6 py-4',
                   selectedTheme === 'light' &&
-                    'bg-blue-500/15 outline outline-1 outline-blue-500',
+                    'bg-primary/15 outline outline-1 outline-primary',
                 )}
               >
-                <div className="flex h-4 w-4 items-center rounded-full border-2 border-zinc-400 peer-checked:border-blue-500 peer-checked:bg-blue-500">
+                <div className="flex h-4 w-4 items-center rounded-full border-2 border-zinc-400 peer-checked:border-primary peer-checked:bg-primary">
                   {selectedTheme === 'light' && (
-                    <div className="mx-auto h-2 w-2 rounded-full bg-blue-500" />
+                    <div className="mx-auto h-2 w-2 rounded-full bg-primary" />
                   )}
                 </div>
                 <span className="text-sm">Light mode</span>
@@ -73,8 +73,7 @@ function Theme() {
             <Card
               className={cn(
                 'overflow-hidden',
-                selectedTheme === 'dark' &&
-                  'outline outline-1 outline-blue-500',
+                selectedTheme === 'dark' && 'outline outline-1 outline-primary',
               )}
             >
               <div>
@@ -88,12 +87,12 @@ function Theme() {
                 className={cn(
                   'gap-2 bg-muted/70 px-6 py-4',
                   selectedTheme === 'dark' &&
-                    'bg-blue-500/15 outline outline-1 outline-blue-500',
+                    'bg-primary/15 outline outline-1 outline-primary',
                 )}
               >
-                <div className="flex h-4 w-4 items-center rounded-full border-2 border-zinc-400 peer-checked:border-blue-500 peer-checked:bg-blue-500">
+                <div className="flex h-4 w-4 items-center rounded-full border-2 border-zinc-400 peer-checked:border-primary peer-checked:bg-primary">
                   {selectedTheme === 'dark' && (
-                    <div className="mx-auto h-2 w-2 rounded-full bg-blue-500" />
+                    <div className="mx-auto h-2 w-2 rounded-full bg-primary" />
                   )}
                 </div>
                 <span className="text-sm">Dark mode</span>
@@ -116,7 +115,7 @@ function Theme() {
               className={cn(
                 'overflow-hidden',
                 selectedTheme === 'system' &&
-                  'outline outline-1 outline-blue-500',
+                  'outline outline-1 outline-primary',
               )}
             >
               <div>
@@ -130,12 +129,12 @@ function Theme() {
                 className={cn(
                   'gap-2 bg-muted/70 px-6 py-4',
                   selectedTheme === 'system' &&
-                    'bg-blue-500/15 outline outline-1 outline-blue-500',
+                    'bg-primary/15 outline outline-1 outline-primary',
                 )}
               >
-                <div className="flex h-4 w-4 items-center rounded-full border-2 border-zinc-400 peer-checked:border-blue-500 peer-checked:bg-blue-500">
+                <div className="flex h-4 w-4 items-center rounded-full border-2 border-zinc-400 peer-checked:border-primary peer-checked:bg-primary">
                   {selectedTheme === 'system' && (
-                    <div className="mx-auto h-2 w-2 rounded-full bg-blue-500" />
+                    <div className="mx-auto h-2 w-2 rounded-full bg-primary" />
                   )}
                 </div>
                 <span className="text-sm">System</span>

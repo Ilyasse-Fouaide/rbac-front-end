@@ -6,6 +6,7 @@ import {
   Navigate,
   RouterProvider,
 } from 'react-router-dom';
+import { NuqsAdapter } from 'nuqs/adapters/react-router/v7';
 
 import Home from '@/pages/Home';
 import SignIn from '@/pages/SignIn';
@@ -83,13 +84,24 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  const [queryClient] = React.useState(() => new QueryClient());
+  const [queryClient] = React.useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            refetchOnWindowFocus: false, // default: true
+          },
+        },
+      }),
+  );
 
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ThemeProvider>
-          <RouterProvider router={router} />
+          <NuqsAdapter>
+            <RouterProvider router={router} />
+          </NuqsAdapter>
         </ThemeProvider>
       </AuthProvider>
       <ReactQueryDevtools initialIsOpen={false} />
