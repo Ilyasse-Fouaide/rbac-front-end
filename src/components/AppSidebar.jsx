@@ -31,6 +31,7 @@ import { useAuth } from '@features-auth/components/AuthProvider';
 import RequirePermissionProvider from '@/context/RequirePermissionProvider';
 import RequirePermission from '@/components/RequirePermission';
 import logoOpened from '@/assets/header/0.75x/header.png';
+import { useTheme } from '@/context/ThemeProvider';
 
 // Menu items.
 const sidebarLefttData = [
@@ -114,9 +115,10 @@ const SidebarMain = ({
 const SidebarLeft = () => {
   const { user } = useAuth();
   const { isMobile, toggleSidebar, state } = useSidebar();
+  const { sidebarCollapsible } = useTheme();
 
   return (
-    <Sidebar variant="sidebar" collapsible="icon">
+    <Sidebar variant="sidebar" collapsible={sidebarCollapsible}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

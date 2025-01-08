@@ -21,8 +21,10 @@ export const ThemeProvider = ({
   children,
   defaultTheme = 'system',
   defaultColorTheme = 'default',
+  defaultSidebarCollapsible = 'icon',
   storageKey = 'ui-theme',
   colorStorageKey = 'ui-color-theme',
+  sidebarCollapsibleStorageKey = 'sidebar:collapsible',
 }) => {
   const [theme, setTheme] = React.useState(() => {
     return localStorage.getItem(storageKey) || defaultTheme;
@@ -30,6 +32,13 @@ export const ThemeProvider = ({
 
   const [colorTheme, setColorTheme] = React.useState(() => {
     return localStorage.getItem(colorStorageKey) || defaultColorTheme;
+  });
+
+  const [sidebarCollapsible, setSidebarCollapsible] = React.useState(() => {
+    return (
+      localStorage.getItem(sidebarCollapsibleStorageKey) ||
+      defaultSidebarCollapsible
+    );
   });
 
   React.useEffect(() => {
@@ -71,8 +80,20 @@ export const ThemeProvider = ({
         localStorage.setItem(colorStorageKey, newColorTheme);
         setColorTheme(newColorTheme);
       },
+      sidebarCollapsible,
+      setSidebarCollapsible: (collapsible) => {
+        localStorage.setItem(sidebarCollapsibleStorageKey, collapsible);
+        setSidebarCollapsible(collapsible);
+      },
     }),
-    [theme, colorTheme, storageKey, colorStorageKey],
+    [
+      theme,
+      colorTheme,
+      sidebarCollapsible,
+      storageKey,
+      colorStorageKey,
+      sidebarCollapsibleStorageKey,
+    ],
   );
 
   return (

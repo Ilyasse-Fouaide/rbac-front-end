@@ -48,8 +48,8 @@ function ColorThemes() {
                 <div className="h-full w-full bg-foreground"></div>
               </div>
               {colorTheme === 'default' && (
-                <span className="absolute right-1.5 top-1.5">
-                  <Check className="h-4 w-4 text-primary" />
+                <span className="absolute right-0 top-1 z-10 -translate-y-1/2 translate-x-1/2 rounded-full bg-primary">
+                  <Check className="h-4 w-4 text-background" strokeWidth={4} />
                 </span>
               )}
             </button>
@@ -72,8 +72,8 @@ function ColorThemes() {
                 </div>
               </div>
               {colorTheme === value && (
-                <span className="absolute right-1.5 top-1.5">
-                  <Check className="h-4 w-4 text-primary" />
+                <span className="absolute right-0 top-1 z-10 -translate-y-1/2 translate-x-1/2 rounded-full bg-primary">
+                  <Check className="h-4 w-4 text-background" strokeWidth={4} />
                 </span>
               )}
             </button>
