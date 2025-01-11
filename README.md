@@ -1,5 +1,11 @@
 # React + Vite
 
+## To do
+
+- [ ] add user
+- [ ] delete single user
+- [ ] show user
+
 ## Advanced Folder Structure for React app
 
 ```

@@ -27,6 +27,26 @@ function ColorThemes() {
       value: 'blue',
       theme: 'theme-blue',
     },
+    {
+      name: 'Ocean',
+      value: 'ocean',
+      theme: 'theme-ocean',
+    },
+    {
+      name: 'Discord',
+      value: 'discord',
+      theme: 'theme-discord',
+    },
+    {
+      name: 'Sunset',
+      value: 'sunset',
+      theme: 'theme-sunset',
+    },
+    {
+      name: 'Rose Gold',
+      value: 'rose-gold',
+      theme: 'theme-rose-gold',
+    },
   ];
   return (
     <section className="grid gap-2">

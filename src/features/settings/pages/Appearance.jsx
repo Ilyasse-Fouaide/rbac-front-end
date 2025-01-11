@@ -1,6 +1,5 @@
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import Default from '../layout/Default';
-import { Check, Info } from 'lucide-react';
+import { Check } from 'lucide-react';
 import Theme from '../components/Theme';
 import ColorThemes from '../components/ColorThemes';
 import { useTheme } from '@/context/ThemeProvider';
@@ -8,6 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils.js';
 import offcanvasSidebar from '../assets/sidebar-offcanvas.svg';
 import iconSidebar from '../assets/sidebar-icon.svg';
+import ApperanceAlert from '../components/ApperanceAlert';
 
 const page = 'Appearance';
 const pageTitle = 'Appearance';
@@ -37,12 +37,8 @@ function Appearance() {
       pageTitle={pageTitle}
       pageDescription={pageDescription}
     >
-      <Alert className="flex items-center border-none bg-blue-400/15">
-        <AlertDescription className="inline-flex items-center gap-3 text-blue-500">
-          <Info />
-          Your preference will be automatically saved for future visits
-        </AlertDescription>
-      </Alert>
+      <Separator />
+      <ApperanceAlert />
       <Theme />
       <ColorThemes />
       <Separator />

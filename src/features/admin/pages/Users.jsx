@@ -24,31 +24,15 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationPrevious,
-  PaginationNext,
-  PaginationLink,
-  PaginationEllipsis,
-} from '@/components/ui/pagination';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import Administrator from '../components/Administrator';
 import UseFetchUsers from '../hooks/useFetchUsers';
-import { ChevronDown, MoreHorizontal, Trash, X } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { ChevronDown, MoreHorizontal } from 'lucide-react';
 import { useAuth } from '@features-auth/components/AuthProvider';
+import Actionbar from '../components/Actionbar';
+import UserPagination from '../components/UserPagination';
+import AddUser from '../components/AddUser';
 
 const columns = [
   {
@@ -114,8 +98,8 @@ const columns = [
     id: 'actions',
     enableHiding: false,
     size: '3rem',
-    cell: ({ row }) => {
-      const payment = row.original;
+    cell: ({ _row }) => {
+      // const payment = row.original;
 
       return (
         <div className="flex items-center justify-end">
@@ -127,15 +111,10 @@ const columns = [
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(payment.id)}
-              >
-                Copy payment ID
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
               <DropdownMenuItem>View customer</DropdownMenuItem>
-              <DropdownMenuItem>View payment details</DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive">
+                Delete
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -150,14 +129,15 @@ function Users() {
   const [searchDebounced] = useDebounce(search, 1000);
   const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1));
   const [limit, setLimit] = useQueryState('per_page', { defaultValue: '25' });
-  const [sort, setSort] = React.useState([]);
-  const [select, setSelect] = React.useState([]);
+  const [sort] = React.useState([]);
+  const [select] = React.useState([]);
 
   const [rowSelection, setRowSelection] = React.useState({});
   const [columnVisibility, setColumnVisibility] = React.useState({});
 
   const { data, isLoading } = useQuery({
     queryKey: [
+      'users',
       'search',
       { search: searchDebounced, page, limit, select, sort },
     ],
@@ -180,81 +160,65 @@ function Users() {
     },
   });
 
-  const getPageNumbers = () => {
-    const current = data?.pagination?.currentPage;
-    const last = data?.pagination?.totalPages;
-    const delta = 2; // Number of pages to show on each side
-    const range = [];
-
-    if (last === 1) {
-      range.push(last);
-      return range;
-    }
-
-    for (
-      let i = Math.max(2, current - delta);
-      i <= Math.min(last - 1, current + delta);
-      i++
-    ) {
-      range.push(i);
-    }
-
-    if (current - delta > 2) {
-      range.unshift('...');
-    }
-    if (current + delta < last - 1) {
-      range.push('...');
-    }
-
-    range.unshift(1);
-    range.push(last);
-
-    return range;
-  };
-
   const handleClearSelection = React.useCallback(() => {
     table.toggleAllPageRowsSelected(false);
   }, [table]);
 
-  const handleDeleteSelected = React.useCallback(() => {
-    // Logic for deleting selected users
-  }, []);
+  const currentPage = data?.pagination?.currentPage;
+  const totalPages = data?.pagination?.totalPages;
+  const selectedCount = table.getFilteredSelectedRowModel().rows.length;
+  const selectedIds = table
+    .getFilteredSelectedRowModel()
+    .rows.map((row) => row.original._id);
+
+  const valuesMemorized = React.useMemo(
+    () => ({
+      selectedCount,
+      selectedIds,
+      currentPage,
+      totalPages,
+    }),
+    [selectedCount, selectedIds, currentPage, totalPages],
+  );
 
   return (
     <Administrator>
-      <div className="flex items-center gap-2 py-4">
-        <Input
-          placeholder="Filter emails..."
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          className="max-w-sm"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+      <div className="flex flex-col-reverse items-end gap-2 py-4 lg:flex-row">
+        <div className="flex w-full items-center gap-2">
+          <Input
+            placeholder="Filter emails..."
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            className="w-full lg:max-w-sm"
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Columns <ChevronDown />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <AddUser />
       </div>
       <div className="w-full overflow-auto rounded-md border">
         <Table>
@@ -265,10 +229,6 @@ function Users() {
                   <TableHead
                     key={header.id}
                     className="whitespace-nowrap [&:has([role=checkbox])]:w-10"
-                    // style={{
-                    //   minWidth: header.column.columnDef.size,
-                    //   maxWidth: header.column.columnDef.size,
-                    // }}
                   >
                     {flexRender(
                       header.column.columnDef.header,
@@ -301,10 +261,6 @@ function Users() {
                     <TableCell
                       className="whitespace-nowrap [&:has([role=checkbox])]:w-10"
                       key={cell.id}
-                      // style={{
-                      //   minWidth: cell.column.columnDef.size,
-                      //   maxWidth: cell.column.columnDef.size,
-                      // }}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,
@@ -330,101 +286,19 @@ function Users() {
       {isLoading ? (
         <p>loading...</p>
       ) : (
-        <div className="flex items-center justify-between">
-          <Pagination className="justify-start py-4">
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={() => {
-                    if (data.pagination.currentPage === 1) return;
-                    setPage((p) => p - 1);
-                  }}
-                  className={
-                    data.pagination.currentPage === 1
-                      ? 'pointer-events-none opacity-50'
-                      : ''
-                  }
-                />
-              </PaginationItem>
-
-              {getPageNumbers().map((pageNum, idx) => (
-                <PaginationItem key={idx}>
-                  {pageNum === '...' ? (
-                    <PaginationEllipsis />
-                  ) : (
-                    <PaginationLink
-                      onClick={() => setPage(pageNum)}
-                      isActive={pageNum === data.pagination.currentPage}
-                    >
-                      {pageNum}
-                    </PaginationLink>
-                  )}
-                </PaginationItem>
-              ))}
-
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() => {
-                    if (
-                      data.pagination.currentPage === data.pagination.totalPages
-                    ) {
-                      return;
-                    }
-                    setPage((p) => p + 1);
-                  }}
-                  className={
-                    data.pagination.currentPage === data.pagination.totalPages
-                      ? 'pointer-events-none opacity-50'
-                      : ''
-                  }
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-          <Select value={limit} onValueChange={(v) => setLimit(v)}>
-            <SelectTrigger className="w-[120px] shrink-0">
-              <SelectValue placeholder={`per page ${limit}`} />
-            </SelectTrigger>
-            <SelectContent>
-              {[10, 25, 50, 100].map((pageSize) => (
-                <SelectItem key={pageSize} value={pageSize.toString()}>
-                  {pageSize} rows
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        <UserPagination
+          limit={limit}
+          setLimit={setLimit}
+          totalPages={valuesMemorized.totalPages}
+          currentPage={valuesMemorized.currentPage}
+          setPage={setPage}
+        />
       )}
-
-      <div
-        className={cn(
-          'fixed bottom-0 left-1/2 z-50 flex w-full -translate-x-1/2 translate-y-32',
-          'max-w-3xl items-center justify-between rounded-none border-t',
-          'backdrop-blur supports-[backdrop-filter]:bg-muted/50',
-          'p-3 shadow-lg transition-all duration-200 ease-in-out',
-          'sm:bottom-6 sm:w-[95%] sm:rounded-lg sm:border',
-          table.getFilteredSelectedRowModel().rows.length > 0 &&
-            'translate-y-0 opacity-100',
-        )}
-      >
-        <div className="flex items-center gap-2 sm:gap-3">
-          <X className="h-5 w-5 shrink-0 text-primary" />
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium sm:text-base">
-              {table.getFilteredSelectedRowModel().rows.length} selected
-            </span>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="secondary" size="sm" onClick={handleClearSelection}>
-            Clear
-          </Button>
-          <Button variant="destructive" size="sm" className="gap-2 sm:px-4">
-            <Trash className="h-4 w-4" />
-            <span className="hidden sm:inline">Delete</span>
-          </Button>
-        </div>
-      </div>
+      <Actionbar
+        selectedCount={valuesMemorized.selectedCount}
+        selectedIds={valuesMemorized.selectedIds}
+        onClearSelection={handleClearSelection}
+      />
     </Administrator>
   );
 }

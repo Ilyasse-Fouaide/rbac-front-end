@@ -87,13 +87,13 @@ function UploadDialog() {
         >
           <div className="space-y-1 text-center">
             <div className="flex justify-center">
-              <div className="rounded-full border border-dashed border-muted-foreground/40 bg-muted/40 p-2.5">
-                <div className="rounded-full border border-dashed border-muted-foreground bg-muted p-2.5">
+              <div className="rounded-full border border-dashed border-primary/40 bg-primary/10 p-2.5">
+                <div className="rounded-full border border-dashed border-primary bg-primary/15 p-2.5">
                   {isPending ? (
                     <Loader2 className="h-6 w-6 animate-spin text-primary" />
                   ) : (
                     <svg
-                      className="mx-auto h-6 w-6 text-muted-foreground"
+                      className="mx-auto h-6 w-6 text-primary"
                       stroke="currentColor"
                       fill="none"
                       viewBox="0 0 48 48"
