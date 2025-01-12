@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Trash, X } from 'lucide-react';
+import { Trash, Users } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import UseDeleteUsers from '../hooks/useDeleteUsers';
@@ -8,7 +8,6 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
 function Actionbar({ selectedCount, selectedIds, onClearSelection }) {
-  console.log('re-render', selectedCount);
   const { toast } = useToast();
 
   const query = useQueryClient();
@@ -18,7 +17,7 @@ function Actionbar({ selectedCount, selectedIds, onClearSelection }) {
     onSuccess: (data) => {
       query.invalidateQueries('users');
       toast({
-        title: 'Failed deleting users',
+        title: 'Delete',
         description: data.message,
       });
       onClearSelection();
@@ -51,7 +50,7 @@ function Actionbar({ selectedCount, selectedIds, onClearSelection }) {
       )}
     >
       <div className="flex items-center gap-2 sm:gap-3">
-        <X className="h-5 w-5 shrink-0 text-primary" />
+        <Users className="h-5 w-5 shrink-0 text-primary" />
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium sm:text-base">
             {selectedCount} selected
