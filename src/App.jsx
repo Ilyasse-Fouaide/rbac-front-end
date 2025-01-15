@@ -21,6 +21,8 @@ import Appearance from './features/settings/pages/Appearance';
 import Profile from './features/settings/pages/Profile';
 import Password from './features/settings/pages/Password';
 import Users from '@admin/pages/Users';
+import Roles from '@admin/pages/Roles';
+import Role from '@admin/pages/Role';
 
 const router = createBrowserRouter([
   {
@@ -38,6 +40,14 @@ const router = createBrowserRouter([
           {
             path: 'users',
             element: <Users />,
+          },
+          {
+            path: 'roles',
+            element: <Roles />,
+          },
+          {
+            path: 'roles/:roleId',
+            element: <Role />,
           },
         ],
       },

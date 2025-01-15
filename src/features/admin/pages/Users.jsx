@@ -116,7 +116,7 @@ function Users() {
       cell: ({ row }) => (
         <div className="flex items-center gap-1">
           <div className="flex h-6 items-center justify-center truncate rounded-sm bg-muted p-1 text-xs capitalize">
-            <span className="mx-1">{row.getValue('roles')[0]}</span>
+            <span className="mx-1">{row.getValue('roles')[0].name}</span>
           </div>
           <RolesPopover row={row} />
         </div>
