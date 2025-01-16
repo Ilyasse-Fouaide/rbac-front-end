@@ -2,15 +2,9 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
   flexRender,
   getCoreRowModel,
+  getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
 import {
@@ -23,9 +17,9 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import UseFetchRoles from '../hooks/useFetchRoles';
-import { MoreHorizontal, MoveRight, PlusCircle, Trash2 } from 'lucide-react';
+import { ArrowUpDown, PlusCircle } from 'lucide-react';
 import Administrator from '../components/Administrator';
-import { Link } from 'react-router-dom';
+import RoleAction from '../components/RoleAction';
 
 const Shield = () => {
   return (
@@ -47,6 +41,8 @@ const Shield = () => {
 };
 
 function Roles() {
+  const [sorting, setSorting] = React.useState([]);
+
   const { data: roles, isPending: rolesPending } = useQuery({
     queryKey: ['roles'],
     queryFn: UseFetchRoles,
@@ -71,7 +67,21 @@ function Roles() {
     },
     {
       accessorKey: 'members',
-      header: () => <div className="text-center">Members</div>,
+      header: ({ column }) => {
+        return (
+          <div className="flex justify-center">
+            <Button
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === 'asc')
+              }
+            >
+              Members
+              <ArrowUpDown className="text-accent-foreground" />
+            </Button>
+          </div>
+        );
+      },
       cell: ({ row }) => (
         <div className="flex items-center justify-center gap-2">
           <span className="truncate">{row.getValue('members')}</span>
@@ -85,27 +95,7 @@ function Roles() {
       cell: ({ row }) => {
         return (
           <div className="flex items-center justify-end">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <MoreHorizontal />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-[150px]" align="end">
-                <Link to={row.getValue('_id')}>
-                  <DropdownMenuItem className="justify-between">
-                    View role
-                    <MoveRight />
-                  </DropdownMenuItem>
-                </Link>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="justify-between text-destructive">
-                  Delete
-                  <Trash2 />
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <RoleAction row={row} />
           </div>
         );
       },
@@ -115,8 +105,11 @@ function Roles() {
   const table = useReactTable({
     data: roles ?? [],
     columns,
+    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     state: {
+      sorting,
       columnVisibility: {
         _id: false,
       },

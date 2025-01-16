@@ -2,6 +2,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 
 import { usePermissions } from '@/context/RequirePermissionProvider';
 
+// protect page
 function Administrator({ children, redirectPath = '/' }) {
   const location = useLocation();
   const { checkPermissions, isLoading, isError } = usePermissions();

@@ -1,5 +1,6 @@
 import { usePermissions } from '@/context/RequirePermissionProvider';
 
+// protect components
 function RequirePermission({ permission, loading, children }) {
   const { checkPermissions, isLoading, isError, error } = usePermissions();
 
