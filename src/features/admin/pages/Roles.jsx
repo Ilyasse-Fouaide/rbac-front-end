@@ -1,5 +1,5 @@
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import {
   flexRender,
@@ -17,9 +17,11 @@ import {
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import UseFetchRoles from '../hooks/useFetchRoles';
-import { ArrowUpDown, PlusCircle } from 'lucide-react';
+import { ArrowUpDown, PlusCircle, UserRoundSearch } from 'lucide-react';
 import Administrator from '../components/Administrator';
 import RoleAction from '../components/RoleAction';
+import { Link } from 'react-router-dom';
+import UseFetchRole from '../hooks/useFetchRole';
 
 const Shield = () => {
   return (
@@ -42,11 +44,19 @@ const Shield = () => {
 
 function Roles() {
   const [sorting, setSorting] = React.useState([]);
+  const queryClient = useQueryClient();
 
   const { data: roles, isPending: rolesPending } = useQuery({
     queryKey: ['roles'],
     queryFn: UseFetchRoles,
   });
+
+  const prefetchRole = async (roleId) => {
+    return await queryClient.prefetchQuery({
+      queryKey: ['roles', roleId],
+      queryFn: () => UseFetchRole(roleId),
+    });
+  };
 
   const [columns] = React.useState([
     {
@@ -93,9 +103,17 @@ function Roles() {
       id: 'actions',
       enableHiding: false,
       cell: ({ row }) => {
+        const roleId = row.getValue('_id');
+
         return (
-          <div className="flex items-center justify-end">
-            <RoleAction row={row} />
+          <div className="flex items-center justify-end gap-2">
+            <Link to={roleId} onMouseEnter={() => prefetchRole(roleId)}>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Show user</span>
+                <UserRoundSearch />
+              </Button>
+            </Link>
+            <RoleAction row={row} prefetchRole={prefetchRole} />
           </div>
         );
       },

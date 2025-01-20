@@ -22,7 +22,7 @@ import { MoreHorizontal, MoveRight, Trash2 } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import UseDeleteRole from '../hooks/useDeleteRole';
 
-function RoleAction({ row }) {
+function RoleAction({ row, prefetchRole }) {
   const [open, setOpen] = React.useState(false);
 
   const query = useQueryClient();
@@ -55,7 +55,10 @@ function RoleAction({ row }) {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-[150px]" align="end">
           <Link to={row.getValue('_id')}>
-            <DropdownMenuItem className="justify-between">
+            <DropdownMenuItem
+              className="justify-between"
+              onMouseEnter={() => prefetchRole(row.getValue('_id'))}
+            >
               View role
               <MoveRight />
             </DropdownMenuItem>
