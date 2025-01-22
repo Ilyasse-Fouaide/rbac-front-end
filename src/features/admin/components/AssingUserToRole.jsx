@@ -1,7 +1,10 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { UserPlus, Check, X, Loader2, SearchX } from 'lucide-react';
+import { useDebounce } from 'use-debounce';
 
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import {
   Dialog,
   DialogContent,
@@ -12,16 +15,23 @@ import {
 } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { UserPlus, Check, X } from 'lucide-react';
+import UseFetchUsersNotInRole from '../hooks/useFetchUsersNotInRole';
+import { useToast } from '@/hooks/use-toast';
+import useAssignUserToRole from '../hooks/useAssignUserToRole';
 
 function AssingUserToRole({
+  roleId,
   roleName,
   assignUserDialogOpen,
   setIsAssignUserDialogOpen,
 }) {
+  const [search, setSearch] = React.useState('');
+  const [searchDebounced] = useDebounce(search, 1000);
   const [selectedUsers, setSelectedUsers] = React.useState([]);
-  const [searchQuery, setSearchQuery] = React.useState('');
   const inputRef = React.useRef(null);
+  const { toast } = useToast();
+
+  const query = useQueryClient();
 
   React.useEffect(() => {
     if (selectedUsers !== 0 && inputRef.current) {
@@ -29,33 +39,36 @@ function AssingUserToRole({
     }
   }, [selectedUsers]);
 
-  // Sample available users for assignment
-  const availableUsers = [
-    {
-      _id: 'user1',
-      email: 'john.doe@example.com',
-      avatar: { mediumImage: { url: '/api/placeholder/64/64' } },
-    },
-    {
-      _id: 'user2',
-      email: 'jane.smith@example.com',
-      avatar: { mediumImage: { url: '/api/placeholder/64/64' } },
-    },
-    {
-      _id: 'user3',
-      email: 'alex.wilson@example.com',
-      avatar: { mediumImage: { url: '/api/placeholder/64/64' } },
-    },
-    {
-      _id: 'user4',
-      email: 'sarah.parker@example.com',
-      avatar: { mediumImage: { url: '/api/placeholder/64/64' } },
-    },
-  ];
+  const {
+    data: availableUsers,
+    isPending,
+    isError,
+  } = useQuery({
+    queryKey: ['user-role', roleId, { search: searchDebounced }],
+    queryFn: () => UseFetchUsersNotInRole(roleId, searchDebounced),
+    enabled: !!assignUserDialogOpen,
+  });
 
-  const filteredUsers = availableUsers.filter((user) =>
-    user.email.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const assign = useMutation({
+    mutationFn: useAssignUserToRole,
+    onSuccess: (data) => {
+      toast({
+        description: data.message,
+      });
+      query.invalidateQueries('user-role');
+      setSelectedUsers([]);
+      setSearch('');
+      setIsAssignUserDialogOpen(false);
+    },
+    onError: (err) => {
+      const message =
+        err?.response?.data?.message || 'An unknown error occurred.';
+
+      toast({
+        description: message,
+      });
+    },
+  });
 
   const toggleUserSelection = (user) => {
     setSelectedUsers((prev) =>
@@ -67,10 +80,13 @@ function AssingUserToRole({
 
   const handleAssignUsers = () => {
     // Here you would typically make an API call to assign the users
-    console.log('Assigning users:', selectedUsers);
-    setSelectedUsers([]);
-    setSearchQuery('');
-    setIsAssignUserDialogOpen(false);
+    const array = selectedUsers.map((u) => {
+      return {
+        role: roleId,
+        user: u._id,
+      };
+    });
+    assign.mutate(array);
   };
 
   return (
@@ -78,76 +94,138 @@ function AssingUserToRole({
       open={assignUserDialogOpen}
       onOpenChange={setIsAssignUserDialogOpen}
     >
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="h-full w-full sm:h-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Add members</DialogTitle>
           <DialogDescription>{roleName}</DialogDescription>
         </DialogHeader>
 
         <div className="py-4">
-          <div className="relative flex w-full flex-wrap items-center gap-y-0.5 rounded-sm border border-input bg-muted p-1">
+          <div className="relative flex min-h-10 w-full flex-wrap items-center gap-0.5 rounded-sm border border-input bg-muted/30 p-1">
             {selectedUsers.map((user) => (
-              <div
+              <a
+                role="button"
+                tabIndex={0}
                 onClick={() => toggleUserSelection(user)}
                 key={user._id}
-                className="ml-0.5 flex cursor-pointer items-center rounded-sm bg-primary px-2 py-0.5 text-xs text-primary-foreground"
+                className="ml-0.5 flex h-6 items-center rounded-sm bg-primary px-2 py-0.5 text-xs text-primary-foreground"
               >
-                {user.email}
+                <Avatar className="mr-1 h-4 w-4">
+                  <AvatarImage
+                    src={`${import.meta.env.VITE_API_BASE_URL}/images/${user._id}`}
+                    alt={user.email}
+                  />
+                  <AvatarFallback>{user.email.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <span className="max-w-[100px] truncate sm:max-w-[120px]">
+                  {user.email}
+                </span>
                 <button
-                  className="pointer-events-none ml-1"
-                  onClick={() => toggleUserSelection(user)}
+                  className="ml-1"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent the parent onClick from firing
+                    toggleUserSelection(user);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.stopPropagation();
+                      toggleUserSelection(user);
+                    }
+                  }}
                 >
                   <X className="h-3 w-3" />
                 </button>
-              </div>
+              </a>
             ))}
             <input
               ref={inputRef}
               autoFocus
-              placeholder={selectedUsers.length !== 0 ? '' : 'Search users'}
-              className="flex-1 bg-transparent px-1 outline-none placeholder:text-muted-foreground focus:ring-0"
+              role="combobox"
+              spellCheck={false}
+              aria-activedescendant="user-row-0"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Backspace' && search === '') {
+                  setSelectedUsers((previousArr) => previousArr.slice(0, -1));
+                }
+              }}
+              placeholder={
+                selectedUsers.length !== 0
+                  ? 'Add more users...'
+                  : 'Search users'
+              }
+              className="flex-grow appearance-none bg-transparent px-1 text-base outline-none placeholder:text-muted-foreground focus:ring-0"
             />
           </div>
           <div className="mt-2">
             <ScrollArea className="h-56">
-              {availableUsers.map((user, key) => (
-                <div
-                  key={key}
-                  onClick={() => toggleUserSelection(user)}
-                  className="flex cursor-pointer items-center space-x-2 rounded-md px-1.5 py-2 aria-selected:bg-muted"
-                  aria-selected={selectedUsers.some((u) => u._id === user._id)}
-                >
-                  <Checkbox
-                    className="pointer-events-none"
-                    checked={selectedUsers.some((u) => u._id === user._id)}
-                    onCheckedChange={() => toggleUserSelection(user)}
-                  />
-                  <div className="flex grow items-center gap-2 pl-2">
-                    <Avatar className="h-6 w-6">
-                      <AvatarImage src={user.avatar} alt={user.email} />
-                      <AvatarFallback>{user.email.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 space-y-1">
-                      <p className="text-sm font-medium leading-none">
-                        {user.email}
-                      </p>
-                    </div>
-                  </div>
-                  {selectedUsers.find((u) => u._id === user._id) && (
-                    <Check className="h-4 w-4 text-primary" />
-                  )}
+              {isPending ? (
+                <div className="flex h-10 items-center justify-center">
+                  <Loader2 className="animate-spin" />
                 </div>
-              ))}
+              ) : availableUsers.length === 0 ? (
+                <div className="flex h-56 w-full flex-col items-center justify-center p-4">
+                  <div className="mb-2 flex h-20 w-20 items-center justify-center rounded-full border-2 border-dashed border-primary/30 bg-muted">
+                    <SearchX className="h-10 w-10 text-muted-foreground" />
+                  </div>
+                  <p className="text-center text-sm leading-none text-muted-foreground">
+                    No members with name <strong>{search}</strong>
+                  </p>
+                </div>
+              ) : (
+                availableUsers.map((user, key) => (
+                  <div
+                    key={key}
+                    onClick={() => toggleUserSelection(user)}
+                    className="flex cursor-pointer items-center space-x-2 rounded-md px-1.5 py-2 aria-selected:bg-muted"
+                    aria-selected={selectedUsers.some(
+                      (u) => u._id === user._id,
+                    )}
+                  >
+                    <Checkbox
+                      checked={selectedUsers.some((u) => u._id === user._id)}
+                      onCheckedChange={(e) => {
+                        e.stopPropagation();
+                        toggleUserSelection(user);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.stopPropagation();
+                          toggleUserSelection(user);
+                        }
+                      }}
+                    />
+                    <div className="flex grow items-center gap-2 pl-2">
+                      <Avatar className="h-6 w-6">
+                        <AvatarImage
+                          src={`${import.meta.env.VITE_API_BASE_URL}/images/${user._id}`}
+                          alt={user.email}
+                        />
+                        <AvatarFallback>{user.email.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 space-y-1">
+                        <p className="text-sm font-medium leading-none">
+                          {user.email}
+                        </p>
+                      </div>
+                    </div>
+                    {selectedUsers.find((u) => u._id === user._id) && (
+                      <Check className="h-4 w-4 text-primary" />
+                    )}
+                  </div>
+                ))
+              )}
             </ScrollArea>
           </div>
         </div>
 
         <DialogFooter>
           <Button
-            variant="outline"
+            variant="link"
             onClick={() => {
               setSelectedUsers([]);
-              setSearchQuery('');
+              setSearch('');
               setIsAssignUserDialogOpen(false);
             }}
           >

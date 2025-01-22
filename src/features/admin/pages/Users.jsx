@@ -118,6 +118,11 @@ function Users() {
           <div className="flex h-6 items-center justify-center truncate rounded-sm bg-muted p-1 text-xs capitalize">
             <span className="mx-1">{row.getValue('roles')[0].name}</span>
           </div>
+          {row.getValue('roles').length > 1 && (
+            <div className="flex h-6 w-6 items-center justify-center rounded-sm bg-muted text-xs">
+              <span>+{row.getValue('roles').length - 1}</span>
+            </div>
+          )}
           <RolesPopover row={row} />
         </div>
       ),
@@ -236,7 +241,7 @@ function Users() {
                 {headerGroup.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="whitespace-nowrap p-2 [&:has([role=checkbox])]:w-10"
+                    className="whitespace-nowrap [&:has([role=checkbox])]:w-10"
                   >
                     {flexRender(
                       header.column.columnDef.header,
@@ -267,7 +272,7 @@ function Users() {
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
-                      className="whitespace-nowrap p-2 [&:has([role=checkbox])]:w-10"
+                      className="whitespace-nowrap [&:has([role=checkbox])]:w-10"
                       key={cell.id}
                     >
                       {flexRender(
