@@ -52,6 +52,10 @@ function Roles() {
   });
 
   const prefetchRole = async (roleId) => {
+    const isFetched = queryClient.getQueryData(['roles', roleId]);
+
+    if (isFetched) return;
+
     return await queryClient.prefetchQuery({
       queryKey: ['roles', roleId],
       queryFn: () => UseFetchRole(roleId),

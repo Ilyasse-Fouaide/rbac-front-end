@@ -55,7 +55,7 @@ function AssingUserToRole({
       toast({
         description: data.message,
       });
-      query.invalidateQueries('user-role');
+      query.invalidateQueries(['roles', roleId]);
       setSelectedUsers([]);
       setSearch('');
       setIsAssignUserDialogOpen(false);
@@ -65,6 +65,7 @@ function AssingUserToRole({
         err?.response?.data?.message || 'An unknown error occurred.';
 
       toast({
+        variant: 'destructive',
         description: message,
       });
     },

@@ -36,6 +36,7 @@ import {
 import Administrator from '../components/Administrator';
 import useDeleteRole from '../hooks/useDeleteRole';
 import { useToast } from '@/hooks/use-toast';
+import ManageMembers from '../components/ManageMembers';
 const AssingUserToRole = lazy(() => import('../components/AssingUserToRole'));
 
 const visibleUsers = 4;
@@ -160,7 +161,7 @@ function RoleNotFound() {
 
 function TabLayout({ children, className }) {
   return (
-    <div className={cn(`mx-auto w-full max-w-full space-y-6`, className)}>
+    <div className={cn(`mx-auto w-full max-w-3xl space-y-6`, className)}>
       {children}
     </div>
   );
@@ -234,21 +235,21 @@ function Role() {
               <TabsTrigger
                 value="display"
                 onClick={() => setTab('display')}
-                className="relative rounded-none py-2 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:after:bg-primary"
+                className="relative rounded-none py-2 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 hover:text-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:after:bg-primary"
               >
                 Display
               </TabsTrigger>
               <TabsTrigger
                 value="permissions"
                 onClick={() => setTab('permissions')}
-                className="relative rounded-none py-2 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:after:bg-primary"
+                className="relative rounded-none py-2 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 hover:text-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:after:bg-primary"
               >
                 Permissions
               </TabsTrigger>
               <TabsTrigger
                 value="manage-members"
                 onClick={() => setTab('manage-members')}
-                className="relative rounded-none py-2 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:after:bg-primary"
+                className="relative rounded-none py-2 after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 hover:text-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:after:bg-primary"
               >
                 Manage Members
                 <Badge
@@ -461,9 +462,14 @@ function Role() {
           </p>
         </TabsContent>
         <TabsContent value="manage-members">
-          <p className="p-4 text-center text-xs text-muted-foreground">
-            Content for Tab 3
-          </p>
+          <TabLayout>
+            <ManageMembers
+              roleId={roleId}
+              roleName={data.name}
+              users={data.users}
+              setIsAssignUserDialogOpen={setIsAssignUserDialogOpen}
+            />
+          </TabLayout>
         </TabsContent>
       </Tabs>
 
